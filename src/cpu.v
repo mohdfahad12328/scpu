@@ -34,6 +34,8 @@ wire [7:0]  regs_rdata,
 wire        mem_wre,
             mem_ce,
             mem_rst;
+wire [7:0]  mem_data_out;
+
 `endif
 
 // --------------------------------------------------------
