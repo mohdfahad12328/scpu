@@ -1,0 +1,92 @@
+[
+ {
+  "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+  "InstLine" : 3,
+  "InstName" : "cpu",
+  "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+  "ModuleLine" : 3,
+  "ModuleName" : "cpu",
+  "SubInsts" : [
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 158,
+    "InstName" : "control_unit",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v",
+    "ModuleLine" : 1,
+    "ModuleName" : "controlUint"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 42,
+    "InstName" : "r0",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 56,
+    "InstName" : "r1",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 70,
+    "InstName" : "r2",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 84,
+    "InstName" : "r3",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 98,
+    "InstName" : "r4",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 112,
+    "InstName" : "r5",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 126,
+    "InstName" : "r6",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 140,
+    "InstName" : "r7",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 176,
+    "InstName" : "mem",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+    "ModuleLine" : 13,
+    "ModuleName" : "memory"
+   }
+  ]
+ }
+]

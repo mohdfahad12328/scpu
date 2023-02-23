@@ -1,0 +1,36 @@
+//
+//Written by GowinSynthesis
+//Product Version "GowinSynthesis V1.9.8.09 Education"
+//Tue Feb 21 12:45:29 2023
+
+//Source file index table:
+//file0 "\/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v"
+//file1 "\/home/luffy/gowin-projects/scpu-fpga/src/cpu.v"
+//file2 "\/home/luffy/gowin-projects/scpu-fpga/src/memory.v"
+//file3 "\/home/luffy/gowin-projects/scpu-fpga/src/register.v"
+`pragma protect begin_protected
+`pragma protect version="2.1"
+`pragma protect author="default"
+`pragma protect author_info="default"
+`pragma protect encrypt_agent="GOWIN"
+`pragma protect encrypt_agent_info="GOWIN Encrypt Version 2.1"
+
+`pragma protect encoding=(enctype="base64", line_length=76, bytes=256)
+`pragma protect key_keyowner="GOWIN",key_keyname="GWK2021-10",key_method="rsa"
+`pragma protect key_block
+PhN9H4e3xdRiqaacc7aH8W2bQT1P8rI9YJy13J7z0T4EoFuV35gnaQTvM5fa0GTqzcziuri4qIsR
+a81vYBU8YuZOYUyQhUC/wDnD2avoFMs1l3QWN60Jje3b5CX/jnWQPhw71bnb0c4gLWuTqlhUT/nI
+wAXFQSIthXJTDvF6LyAZGLx6euq1+oGBT3AB2UybTUb45zSpAur85iNlEQpoRrqJtqGOjDKyTs2r
+PzzLTuOuSUvIqp64bDbwrC+LweEdmesxhNgZIrh4tramfAaP2RW0f1///UoTgR/CTCiYiLfY7xYR
+GPXGgLe9XW4Xur7ziJ9fk4W13CrupmoDEpxewQ==
+
+`pragma protect encoding=(enctype="base64", line_length=76, bytes=208)
+`pragma protect data_keyowner="default-ip-vendor"
+`pragma protect data_keyname="default-ip-key"
+`pragma protect data_method="aes128-cbc"
+`pragma protect data_block
+1Klh3O83XVAVgKTwmjloHwHrB2dmtuAfAzH3+AUr2Mlj8jOA59h7hsMwXgOFU4UE5MH4pBFFpo4D
+FW4tD0z6rThtcmGRFT3JaEuP4FjYCWKQttRhkElJLpL/pkiTGgYwlHowG9uZnBSLgGXXfE8MmQCi
+AeLQkzssWWl6k66lwTGHWFYvTdF6UL7vIDyXfqyUHNPdymMETQDHcYuCkgrofiT7j6fJqMqL8mM6
+IGQRpZDhrNEqfSFYL2uF2JT0XatFfCnULGr6xo4GRm9RQe8lsQ==
+`pragma protect end_protected
