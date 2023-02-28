@@ -1,17 +1,10 @@
 GowinSynthesis start
 Running parser ...
-Analyzing Verilog file '/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v'
-Analyzing Verilog file '/home/luffy/gowin-projects/scpu-fpga/src/cpu.v'
 Analyzing Verilog file '/home/luffy/gowin-projects/scpu-fpga/src/memory.v'
-Analyzing Verilog file '/home/luffy/gowin-projects/scpu-fpga/src/register.v'
-Compiling module 'cpu'("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":3)
-Compiling module 'register'("/home/luffy/gowin-projects/scpu-fpga/src/register.v":17)
-Compiling module 'controlUint'("/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v":1)
 Compiling module 'memory'("/home/luffy/gowin-projects/scpu-fpga/src/memory.v":13)
-Extracting RAM for identifier 'mem'("/home/luffy/gowin-projects/scpu-fpga/src/memory.v":20)
-NOTE  (EX0101) : Current top module is "cpu"
+Extracting RAM for identifier 'mem'("/home/luffy/gowin-projects/scpu-fpga/src/memory.v":21)
+NOTE  (EX0101) : Current top module is "memory"
 [5%] Running netlist conversion ...
-WARN  (CV0016) : Input clk is unused("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":17)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
@@ -27,15 +20,6 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "memory" instantiated to "mem" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":184)
-WARN  (NL0002) : The module "register" instantiated to "r0" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":54)
-WARN  (NL0002) : The module "register" instantiated to "r1" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":68)
-WARN  (NL0002) : The module "register" instantiated to "r2" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":82)
-WARN  (NL0002) : The module "register" instantiated to "r3" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":96)
-WARN  (NL0002) : The module "register" instantiated to "r4" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":110)
-WARN  (NL0002) : The module "register" instantiated to "r5" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":124)
-WARN  (NL0002) : The module "register" instantiated to "r6" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":138)
-WARN  (NL0002) : The module "register" instantiated to "r7" is swept in optimizing("/home/luffy/gowin-projects/scpu-fpga/src/cpu.v":152)
 [95%] Generate netlist file "/home/luffy/gowin-projects/scpu-fpga/impl/gwsynthesis/scpu-fpga.vg" completed
 [100%] Generate report file "/home/luffy/gowin-projects/scpu-fpga/impl/gwsynthesis/scpu-fpga_syn.rpt.html" completed
 GowinSynthesis finish

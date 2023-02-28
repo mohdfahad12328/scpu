@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="cpu"/>
+<Module name="memory" Lut="691" Ssram="256"/>
