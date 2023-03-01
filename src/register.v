@@ -23,15 +23,15 @@ module register(
     output [7:0] out_addr
     );
 
-assign out_data = rdata ? register : 8'bz;
-assign out_addr = raddr ? register : 8'bz;
+assign out_data = rdata ? rr : 8'bz;
+assign out_addr = raddr ? rr : 8'bz;
 
-reg [7:0]register;
+reg [7:0]rr;
 
 always @(posedge clk) begin
     if(wdata == 1 && waddr == 0)
-        register <= in_data;
+        rr <= in_data;
     else if (wdata == 0 && waddr == 1)
-        register <= in_addr;
+        rr <= in_addr;
 end
 endmodule

@@ -2,11 +2,11 @@
 
 module control_unit_tb ();
 
-reg clk = 0;
+reg clk = 1;
 
 always begin clk <= ~clk; #5; end
 
-wire reg [7:0]
+wire [7:0]
             regs_rdata,
             regs_wdata,
             regs_raddr,
@@ -45,7 +45,7 @@ cpu uut (
 
 initial begin
 	uut.mem.mem[0] = 8'b0;
-	uut.mem.mem[1] = 8'b0;
+	uut.mem.mem[1] = 8'hff;
 	#100;
 	$finish;
 end

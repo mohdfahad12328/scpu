@@ -4,7 +4,7 @@ module pc (
     output [15:0] out
 );
 
-reg [15:0] pc_reg;
+reg [15:0] pc_reg = 0;
 assign out = r ? pc_reg : 16'bz;
 
 always @(posedge clk) begin
