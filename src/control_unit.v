@@ -40,39 +40,10 @@ assign regs_raddr = r_raddr;
 assign regs_waddr = r_waddr;
 
 
-// memory interface
-
-// reg [4:0] mem_c = 0;
-// localparam  MEM_CE = 16,
-// MEM_OE = 8,
-// MEM_R = 4,
-// MEM_RST = 2,
-// MEM_W = 1;
-
-// assign {mem_ce, mem_oe, mem_r, mem_rst, mem_w} = mem_c;
-
-
-// program counter
-
-// reg [3:0]pc_c = 0;
-// localparam  PC_INC = 8,
-// PC_R = 4,
-// PC_RST = 2,
-// PC_W = 1;
-
-// assign {pc_inc, pc_r, pc_rst, pc_w} = pc_c;
-
-
 // inst register
 
 reg [7:0] inst;
 wire inst_r, inst_w;
-
-// reg [1:0] inst_c = 0;
-// localparam  INST_R = 2,
-// INST_W = 1;
-
-// assign {inst_r, inst_w} = inst_c;
 
 assign data_bus_out = inst_r ? inst : 8'bz;
 always @(posedge clk)
@@ -115,15 +86,9 @@ localparam EXECUTE1 = 3;
 always @(negedge clk) begin
     case(state)
         FETCH: begin
-            // mem[pc]
-            acs <= MEM_CE | MEM_R | PC_R;
-            
-            state <= DECODE;
-        end
-        DECODE: begin
             // isnt <- mem[pc]
             // pc <- pc + 1
-            acs  <= MEM_CE | MEM_OE | INST_W | PC_INC;
+            acs <= MEM_CE | MEM_OE | MEM_R | INST_W | PC_R | PC_INC;
             
             state <= EXECUTE0;
         end
@@ -134,9 +99,10 @@ always @(negedge clk) begin
                 // ldr immediate
                 0: begin
                     // mem[pc]
-            				acs <= MEM_CE | MEM_R | PC_R;
+            				acs <= MEM_CE | MEM_OE | MEM_R | PC_R | PC_INC;
+                    r_wdata[inst[2:0]] <= HIGH;
 
-                    state <= EXECUTE1;
+                    state <= FETCH;
                 end
                 
                 1: begin
@@ -144,22 +110,6 @@ always @(negedge clk) begin
                 end
                 
             endcase
-        end
-        
-        EXECUTE1: begin
-            
-            case(inst[7:3])
-                // ldr immediate
-                0: begin
-                    // reg <- mem[pc]
-                    // pc <- pc + 1
-                    acs <= MEM_CE | MEM_OE | PC_INC;
-                    r_wdata[inst[2:0]] <= HIGH;
-                    
-                    state <= FETCH;
-                end
-            endcase
-
         end
 
     endcase

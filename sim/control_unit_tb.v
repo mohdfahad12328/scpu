@@ -46,6 +46,8 @@ cpu uut (
 initial begin
 	uut.mem.mem[0] = 8'b0;
 	uut.mem.mem[1] = 8'hff;
+	uut.mem.mem[2] = 8'b0;
+	uut.mem.mem[3] = 8'hff;
 	#100;
 	$finish;
 end
