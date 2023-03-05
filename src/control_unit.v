@@ -52,7 +52,7 @@ always @(posedge clk)
 
 // addr register
 reg [15:0] addrr;
-wire addrr_r, addrr_w1, addrr_wh;
+wire addrr_r, addrr_wl, addrr_wh;
 assign addr_bus_out = addrr_r ? addrr : 16'bz;
 always @(posedge clk) begin
 	if(addrr_wl) begin
@@ -70,38 +70,52 @@ end
 */
 localparam ncs = 3 + 5 + 4 + 2; // addrr,mem,pc,inst
 reg [ncs-1:0] acs = 0;
-assign {			addrr_r, addrr_wl, addrr_wh,
-					mem_ce, mem_oe, mem_r, mem_rst, mem_w,
-					pc_inc, pc_r, pc_rst, pc_w,
-					inst_r, inst_w,
+assign {	addrr_r, addrr_wl, addrr_wh,
+			mem_ce, mem_oe, mem_r, mem_rst, mem_w,
+			pc_inc, pc_r, pc_rst, pc_w,
+			inst_r, inst_w
 	} = acs;
 
-localparam 		 INST_W = 2**0,
-					 INST_R = 2**1,
-					 PC_W   = 2**2,
-					 PC_RST = 2**3,
-					 PC_R   = 2**4,
-					 PC_INC = 2**5,
-					 MEM_W  = 2**6,
-					 MEM_RST= 2**7,
-					 MEM_R  = 2**8,
-					 MEM_OE = 2**9,
-					 MEM_CE = 2**10;
-					 ADDRR_WH = 2**11;
-					 ADDRR_WL = 2**12;
-					 ADDRR_R = 2**13;
-					 
+localparam 	INST_W = 2**0,
+			INST_R = 2**1,
+			PC_W   = 2**2,
+			PC_RST = 2**3,
+			PC_R   = 2**4,
+			PC_INC = 2**5,
+			MEM_W  = 2**6,
+			MEM_RST= 2**7,
+			MEM_R  = 2**8,
+			MEM_OE = 2**9,
+			MEM_CE = 2**10,
+			ADDRR_WH = 2**11,
+			ADDRR_WL = 2**12,
+			ADDRR_R = 2**13;
+
+
 // execution state machine
 
 reg [2:0]state      = 0;
-localparam FETCH    = 0;
-localparam EXECUTE0 = 1;
-localparam EXECUTE1 = 2;
+localparam WAIT     = 0;
+localparam FETCH    = 1;
+localparam EXECUTE0 = 2;
+localparam EXECUTE1 = 3;
+localparam EXECUTE2 = 4;
+
+reg [2:0]wait_counter = 0;
+localparam WAIT_TIME = 5;
+
 
 always @(negedge clk) begin
     case(state)
+        WAIT: begin
+        	wait_counter <= wait_counter + 1;
+        	if(wait_counter == WAIT_TIME)
+        		state <= FETCH;
+        	else state <= state;
+        end
+
         FETCH: begin
-				r_wdata <= LOW;
+			r_wdata <= LOW;
             // isnt <- mem[pc]
             // pc <- pc + 1
             acs <= MEM_CE | MEM_OE | MEM_R | INST_W | PC_R | PC_INC;
@@ -114,46 +128,45 @@ always @(negedge clk) begin
                 // ldr immediate
                 5'b00000: begin
                     // r <- mem[pc]; pc <- pc + 1;
-							acs <= MEM_CE | MEM_OE | MEM_R | PC_R | PC_INC;
-							r_wdata[inst[2:0]] <= HIGH;
+					acs <= MEM_CE | MEM_OE | MEM_R | PC_R | PC_INC;
+					r_wdata[inst[2:0]] <= HIGH;
 
                     state <= FETCH;
-              end
-					// str register direct
-					5'b10010: begin
-							// addrr[15:8] <- mem[pc]; pc <- pc + 1;
-							acs <= MEM_CE | MEM_OE | MEM_R | PC_R | ADDRR_WH | PC_INC;
-							
-							state <= EXECUTE1;
-					end
+              	end
+				// str register direct
+				5'b10010: begin
+					// addrr[15:8] <- mem[pc]; pc <- pc + 1;
+					acs <= MEM_CE | MEM_OE | MEM_R | PC_R | ADDRR_WH | PC_INC;
+						
+					state <= EXECUTE1;
+				end
             endcase
         end
 		  
-		  EXECUTE1: begin
-		  case(inst[7:3])
-				// str register direct
-				5'b10010: begin
-						// addrr[7:0] <- mem[pc]; pc <- pc + 1;
-						acs <= MEM_CE | MEM_OE | MEM_R | PC_R | ADDRR_WL | PC_INC;
-						
-						state <= EXECUTE2;
-				end
-			endcase
-		  end
-		  EXECUTE2: begin
+		EXECUTE1: begin
 			case(inst[7:3])
 				// str register direct
 				5'b10010: begin
-						// mem[addrr] <- r; pc <- pc + 1;
-						acs <= MEM_CE | MEM_W | ADDRR_R | PC_INC;
-						r_rdata[inst[2:0]] <= HIGH;
-						
-						state <= FETCH;
+					// addrr[7:0] <- mem[pc]; pc <- pc + 1;
+					acs <= MEM_CE | MEM_OE | MEM_R | PC_R | ADDRR_WL | PC_INC;
+					
+					state <= EXECUTE2;
 				end
 			endcase
-		  end
-		  end
+		end
+		
+		EXECUTE2: begin
+			case(inst[7:3])
+				// str register direct
+				5'b10010: begin
+					// mem[addrr] <- r; pc <- pc + 1;
+					acs <= MEM_CE | MEM_W | ADDRR_R | PC_INC;
+					r_rdata[inst[2:0]] <= HIGH;
+					
+					state <= FETCH;
+				end
+			endcase
+		end
     endcase
 end
-
 endmodule

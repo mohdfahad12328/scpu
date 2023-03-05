@@ -1,5 +1,5 @@
 
-`define SYNTH_VIEW
+// `define SYNTH_VIEW
 
 module cpu(
 
@@ -19,6 +19,7 @@ module cpu(
 
 `endif
 
+output [7:0]led,
 input clk
 );
 
@@ -156,6 +157,50 @@ wire [15:0] addr_bus;
     );
 
 // --------------------------------------------------------
+// memory
+// --------------------------------------------------------
+
+`ifndef SYNTH_VIEW
+    wire mem_ce, mem_r, mem_w, mem_rst, mem_oe;
+`endif
+
+memory mem(
+    .out_data(data_bus),
+    .in_data(data_bus),
+
+    .addr(addr_bus),
+    
+    .ce(mem_ce),
+    .w(mem_w),
+    .r(mem_r),
+    .oe(mem_oe),
+    .rst(mem_rst),
+    
+    .led(led),
+    
+    .clk(clk)
+);
+
+// --------------------------------------------------------
+// PC
+// --------------------------------------------------------
+`ifndef SYNTH_VIEW
+wire pc_w, pc_r, pc_rst, pc_inc;
+`endif
+
+pc pc(
+    .w(pc_w),
+    .r(pc_r),
+    .rst(pc_rst),
+    .inc(pc_inc),
+    
+    .in(addr_bus),
+    .out(addr_bus),
+
+    .clk(clk)
+);
+
+// --------------------------------------------------------
 // control unit
 // --------------------------------------------------------
 
@@ -178,50 +223,8 @@ controlUint control_unit(
 
     .data_bus_in(data_bus),
     .data_bus_out(data_bus),
-    // .addr_bus_in(addr_bus),
-    // .addr_bus_out(addr_bus),
-
-    .clk(clk)
-);
-
-// --------------------------------------------------------
-// memory
-// --------------------------------------------------------
-
-`ifndef SYNTH_VIEW
-    wire mem_ce, mem_r, mem_w, mem_rst, mem_oe;
-`endif
-
-memory mem(
-    .out_data(data_bus),
-    .in_data(data_bus),
-
-    .addr(addr_bus),
-    
-    .ce(mem_ce),
-    .w(mem_w),
-    .r(mem_r),
-    .oe(mem_oe),
-    .rst(mem_rst),
-    
-    .clk(clk)
-);
-
-// --------------------------------------------------------
-// PC
-// --------------------------------------------------------
-`ifndef SYNTH_VIEW
-wire pc_w, pc_r, pc_rst, pc_inc;
-`endif
-
-pc pc(
-    .w(pc_w),
-    .r(pc_r),
-    .rst(pc_rst),
-    .inc(pc_inc),
-    
-    .in(addr_bus),
-    .out(addr_bus),
+    .addr_bus_in(addr_bus),
+    .addr_bus_out(addr_bus),
 
     .clk(clk)
 );
