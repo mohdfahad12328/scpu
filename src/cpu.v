@@ -1,5 +1,6 @@
 
 // `define SYNTH_VIEW
+`define __GOWIN__
 
 module cpu(
 
