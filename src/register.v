@@ -15,23 +15,45 @@ register r0(
 */
 
 module register(
-    input clk ,rdata, wdata,
+    // data and addr
+    input rdata, wdata,
     input [7:0] in_data,
     output [7:0] out_data,
     input raddr, waddr,
     input [7:0] in_addr,
-    output [7:0] out_addr
+    output [7:0] out_addr,
+    // alu
+    input alu_r_a, alu_r_b, alu_w,
+    output [7:0] alu_a_bus, alu_b_bus,
+    input [7:0] alu_out_bus,
+    // clk
+    input clk
     );
 
-assign out_data = rdata ? rr : 8'bz;
-assign out_addr = raddr ? rr : 8'bz;
+reg [7:0]r;
 
-reg [7:0]rr;
+/*------------------------------------------------------------------------------
+--  DATA AND ADDRESS
+------------------------------------------------------------------------------*/
+assign out_data = rdata ? r : 8'bz;
+assign out_addr = raddr ? r : 8'bz;
 
 always @(posedge clk) begin
     if(wdata == 1 && waddr == 0)
-        rr <= in_data;
+        r <= in_data;
     else if (wdata == 0 && waddr == 1)
-        rr <= in_addr;
+        r <= in_addr;
 end
+
+/*------------------------------------------------------------------------------
+--  ALU
+------------------------------------------------------------------------------*/
+assign alu_a_bus = alu_r_a ? r : 8'bz;
+assign alu_b_bus = alu_r_b ? r : 8'bz;
+
+always @(posedge clk) begin
+    if(alu_w)
+        r <= alu_out_bus;
+end
+
 endmodule

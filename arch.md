@@ -7,6 +7,4 @@
     [*] --> FETCH
     FETCH --> DECODE
     DECODE --> EXECUTE0
-    
-
 ```

@@ -1,10 +1,126 @@
 [
  {
-  "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
-  "InstLine" : 13,
-  "InstName" : "memory",
-  "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
-  "ModuleLine" : 13,
-  "ModuleName" : "memory"
+  "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+  "InstLine" : 5,
+  "InstName" : "cpu",
+  "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+  "ModuleLine" : 5,
+  "ModuleName" : "cpu",
+  "SubInsts" : [
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 48,
+    "InstName" : "r0",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 62,
+    "InstName" : "r1",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 76,
+    "InstName" : "r2",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 90,
+    "InstName" : "r3",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 104,
+    "InstName" : "r4",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 118,
+    "InstName" : "r5",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 132,
+    "InstName" : "r6",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 146,
+    "InstName" : "r7",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "register"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 168,
+    "InstName" : "mem",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "memory",
+    "SubInsts" : [
+     {
+      "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+      "InstLine" : 23,
+      "InstName" : "io_mem",
+      "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+      "ModuleLine" : 55,
+      "ModuleName" : "io_memory"
+     },
+     {
+      "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+      "InstLine" : 36,
+      "InstName" : "ram_mem",
+      "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+      "ModuleLine" : 92,
+      "ModuleName" : "ram_memory"
+     }
+    ]
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 192,
+    "InstName" : "pc",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v",
+    "ModuleLine" : 1,
+    "ModuleName" : "pc"
+   },
+   {
+    "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+    "InstLine" : 208,
+    "InstName" : "control_unit",
+    "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "controlUint"
+   }
+  ]
+ },
+ {
+  "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/alu.v",
+  "InstLine" : 1,
+  "InstName" : "alu",
+  "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/alu.v",
+  "ModuleLine" : 1,
+  "ModuleName" : "alu"
  }
 ]

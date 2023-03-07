@@ -1,7 +1,27 @@
 {
  "Files" : [
   {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/alu.v",
    "Type" : "verilog"
   }
  ],
@@ -10,7 +30,7 @@
  ],
  "LoopLimit" : 2000,
  "ResultFile" : "/home/luffy/gowin-projects/scpu-fpga/impl/temp/rtl_parser.result",
- "Top" : "",
+ "Top" : "cpu",
  "VerilogStd" : "sysv",
  "VhdlStd" : "vhdl_93"
 }
