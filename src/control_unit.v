@@ -32,6 +32,7 @@ module controlUint (
 	output [7:0]
 		   	alu_opr,
 	output 	alu_en,
+	output alu_direct_data_bus_en,
 
 	// buses
 	input [7:0]   data_bus_in,
@@ -107,9 +108,9 @@ assign regs_alu_r_b = r_alu_r_b;
 	ncs --> no of control signals
 	acs --> all control signals
 */
-localparam ncs = 1 + 3 + 5 + 4 + 2; // alu,addrr,mem,pc,inst
+localparam ncs = 2 + 3 + 5 + 4 + 2; // alu,addrr,mem,pc,inst
 reg [ncs-1:0] acs = 0;
-assign {	alu_en,
+assign {	alu_direct_data_bus_en ,alu_en,
 			addrr_r, addrr_wl, addrr_wh,
 			mem_ce, mem_oe, mem_r, mem_rst, mem_w,
 			pc_inc, pc_r, pc_rst, pc_w,
@@ -130,7 +131,8 @@ localparam 	INST_W = 2**0,
 			ADDRR_WH = 2**11,
 			ADDRR_WL = 2**12,
 			ADDRR_R = 2**13,
-			ALU_EN  = 2**14;
+			ALU_EN  = 2**14,
+			ALU_D_EN = 2**15;
 
 
 /*------------------------------------------------------------------------------
@@ -156,7 +158,7 @@ localparam ADD_RR = 8'hFE;
 /*------------------------------------------------------------------------------
 --  STATE MACHINE PARAMETERS
 ------------------------------------------------------------------------------*/
-reg [2:0]state		 = 0;
+reg [3:0]state		 = 0;
 
 localparam 	WAIT     = 0,
 			FETCH0   = 1,
@@ -165,7 +167,8 @@ localparam 	WAIT     = 0,
 			EXECUTE1 = 4,
 			EXECUTE2 = 5,
 			EXECUTE3 = 6,
-			EXECUTE4 = 7;
+			EXECUTE4 = 7,
+			EXECUTE5 = 8;
 
 reg [2:0]wait_cnt = 0;
 localparam WAIT_TIME = 2;
@@ -212,31 +215,20 @@ end
 --  EXECUTE0
 ------------------------------------------------------------------------------*/
 EXECUTE0: begin
-case(inst[7:3])
 
-LDR_I: begin
-	// mem[pc];
-	acs <= MEM_CE|MEM_R|PC_R;
-	state <= EXECUTE1;
-end
-				
-STR_RD: begin
+// IMMEDIATE MODE
+if(inst[7:3] >= 5'b00000 && inst[7:3] <= 5'b01000) begin
 	// mem[pc];
 	acs <= MEM_CE|MEM_R|PC_R;
 	state <= EXECUTE1;
 end
 
-endcase
-
-case (inst)
-
-ADD_RR: begin
+// REGISTER DIRECT
+if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	// mem[pc];
 	acs <= MEM_CE|MEM_R|PC_R;
 	state <= EXECUTE1;
-end		
-
-endcase
+end
 
 end
 
@@ -244,30 +236,32 @@ end
 -- EXECUTE1 
 ------------------------------------------------------------------------------*/
 EXECUTE1: begin
-case(inst[7:3])
 
-LDR_I: begin
-	// r <- mem[pc]; pc <- pc + 1;
-	acs <= MEM_CE|MEM_OE|PC_R|PC_INC;
-	r_wdata[inst[2:0]] <= HIGH;
-	state <= FETCH0;
-end
+// IMMEDIATE MODE
+if (inst[7:3] >= 5'b00000 && inst[7:3] <= 5'b01000) begin 
+	// LDR
+	if (inst[7:3] == 5'b00000) begin
+		// r <- mem[pc]; pc <- pc + 1;
+		acs <= MEM_CE|MEM_OE|PC_R|PC_INC;
+		r_wdata[inst[2:0]] <= HIGH;
+		state <= FETCH0;	
+	end
+	// ALU
+	else begin
+			acs <= MEM_CE|MEM_OE|PC_R|PC_INC|ALU_EN|ALU_D_EN;
+			r_alu_r_a[inst[2:0]] <= HIGH;
+			r_alu_w[inst[2:0]] <= HIGH;
+			alu_opr_r <= inst[7:3] - 1;
+			state <= FETCH0;
+		end
+	end
 
-STR_RD: begin
+// REGISTER DIRECT
+if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	// addrr[15:8] <- mem[pc]; pc <- pc + 1;
 	acs <= MEM_CE|MEM_OE|PC_R|ADDRR_WH|PC_INC;
 	state <= EXECUTE2;
 end
-
-endcase
-case (inst)
-
-ADD_RR: begin
-	acs <= MEM_CE|MEM_OE|PC_R;
-	state <= EXECUTE2;
-end		
-
-endcase
 
 end
 
@@ -275,50 +269,88 @@ end
 --  EXECUTE2
 ------------------------------------------------------------------------------*/		
 EXECUTE2: begin
-case(inst[7:3])
-				
-STR_RD: begin
+
+// REGISTER DIRECT
+if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	// mem[pc]
 	acs <= MEM_CE|MEM_R|PC_R;
 	state <= EXECUTE3;
 end
 
-endcase
-case (inst)
-ADD_RR: begin
-	acs <= ALU_EN|MEM_CE|MEM_OE|PC_R|PC_INC;
-	r_alu_r_a[data_bus_in[5:3]] <= HIGH;
-	r_alu_r_b[data_bus_in[2:0]] <= HIGH;
-	alu_opr_r <= ALU_ADD;
-	r_alu_w[data_bus_in[5:3]] <= HIGH;
-	state <= FETCH0;
+// case (inst)
+// ADD_RR: begin
+// 	acs <= ALU_EN|MEM_CE|MEM_OE|PC_R|PC_INC;
+// 	r_alu_r_a[data_bus_in[5:3]] <= HIGH;
+// 	r_alu_r_b[data_bus_in[2:0]] <= HIGH;
+// 	alu_opr_r <= ALU_ADD;
+// 	r_alu_w[data_bus_in[5:3]] <= HIGH;
+// 	state <= FETCH0;
+// end
+// endcase
+
 end
 
-endcase
-end
+/*------------------------------------------------------------------------------
+--  EXECUTE3
+------------------------------------------------------------------------------*/
 EXECUTE3: begin
-case(inst[7:3])
 
-STR_RD: begin
+// REGISTER DIRECT
+if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	// addrr[7:0] <- mem[pc]; pc <- pc + 1;
-	acs <= MEM_CE | MEM_OE | PC_R | ADDRR_WL | PC_INC;
+	acs <= MEM_CE|MEM_OE|PC_R|ADDRR_WL|PC_INC;
 	state <= EXECUTE4;
 end
 
-endcase
 end
 
+/*------------------------------------------------------------------------------
+--  EXECUTE4
+------------------------------------------------------------------------------*/
 EXECUTE4: begin
-case (inst[7:3])
-				
-STR_RD: begin
+
+// REGISTER DIRECT
+if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
+	// STR
+	if(inst[7:3] == 5'b10010) begin
 	// mem[addrr] <- r;
-	acs <= MEM_CE | MEM_W | ADDRR_R;
+	acs <= MEM_CE|MEM_W|ADDRR_R;
 	r_rdata[inst[2:0]] <= HIGH;
 	state <= FETCH0;
+	end
+	// LDR OR ALU
+	else begin
+		// mem[addrr]
+		acs <= MEM_CE|MEM_R|ADDRR_R;
+		state <= EXECUTE5;
+	end
 end
-				
-endcase
+
+end
+
+/*------------------------------------------------------------------------------
+--  EXECUTE5
+------------------------------------------------------------------------------*/
+EXECUTE5: begin
+
+// REGISTER DIRECT
+if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
+	// LDR
+	if (inst[7:3] == 5'b01001) begin
+		// r <- mem[addrr];
+		acs <= MEM_CE|MEM_OE|ADDRR_R;
+		r_wdata[inst[2:0]] <= HIGH;
+		state <= FETCH0;	
+	end
+	// ALU
+	else begin
+			acs <= MEM_CE|MEM_OE|ADDRR_R|ALU_EN|ALU_D_EN;
+			r_alu_r_a[inst[2:0]] <= HIGH;
+			r_alu_w[inst[2:0]] <= HIGH;
+			alu_opr_r <= inst[7:3] - 5'b01010;
+			state <= FETCH0;
+		end
+	end
 end
 
 endcase

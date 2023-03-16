@@ -101,7 +101,7 @@ module ram_memory (
     oe
 );
 
-parameter RAM_SIZE = 2**11;
+parameter RAM_SIZE = 2**15;
 reg [7:0] mem[RAM_SIZE-1:0];
 reg [7:0] data_reg;
 

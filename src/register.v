@@ -32,27 +32,18 @@ module register(
 
 reg [7:0]r;
 
-/*------------------------------------------------------------------------------
---  DATA AND ADDRESS
-------------------------------------------------------------------------------*/
 assign out_data = rdata ? r : 8'bz;
 assign out_addr = raddr ? r : 8'bz;
+
+assign alu_a_bus = alu_r_a ? r : 8'bz;
+assign alu_b_bus = alu_r_b ? r : 8'bz;
 
 always @(posedge clk) begin
     if(wdata == 1 && waddr == 0)
         r <= in_data;
     else if (wdata == 0 && waddr == 1)
         r <= in_addr;
-end
-
-/*------------------------------------------------------------------------------
---  ALU
-------------------------------------------------------------------------------*/
-assign alu_a_bus = alu_r_a ? r : 8'bz;
-assign alu_b_bus = alu_r_b ? r : 8'bz;
-
-always @(posedge clk) begin
-    if(alu_w)
+    else if (alu_w)
         r <= alu_out_bus;
 end
 

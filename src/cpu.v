@@ -1,3 +1,6 @@
+/*------------------------------------------------------------------------------
+--  CPU  
+------------------------------------------------------------------------------*/
 
 `define SYNTH_VIEW
 // `define __GOWIN__
@@ -20,10 +23,12 @@ module cpu(
 	output	mem_ce, mem_r, mem_w, mem_rst, mem_oe,
 
 	// pc cs
-	output  pc_w, pc_r, pc_rst, pc_inc,
+	output 	pc_w, pc_r, pc_rst, pc_inc,
 
 	// alu cs
-	output alu_en, output[7:0] alu_opr,
+	output 	alu_en,
+			alu_direct_data_bus_en,
+	output[7:0] alu_opr,
 
 	// buses
 	output [7:0]data_bus,
@@ -274,7 +279,7 @@ pc pc(
 --  ALU
 ------------------------------------------------------------------------------*/
 `ifndef SYNTH_VIEW
-wire alu_en;
+wire alu_en, alu_direct_data_bus_en;
 wire [7:0]alu_opr; 
 `endif
 
@@ -283,6 +288,8 @@ alu alu(
 	.b_data_bus(alu_b_bus),
 	.out_data_bus(alu_out_bus),
 	.opr(alu_opr),
+	.direct_data_bus(data_bus),
+	.direct_data_bus_en(alu_direct_data_bus_en),
 	.en(alu_en)
 );
 
@@ -299,6 +306,7 @@ controlUint control_unit(
 	.regs_alu_r_b(regs_alu_r_b),
 	.regs_alu_w(regs_alu_w),
 	.alu_en(alu_en),
+	.alu_direct_data_bus_en(alu_direct_data_bus_en),
 	.alu_opr(alu_opr),
 
 	.mem_ce(mem_ce),

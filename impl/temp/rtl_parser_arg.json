@@ -1,6 +1,10 @@
 {
  "Files" : [
   {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/alu.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v",
    "Type" : "verilog"
   },
@@ -18,10 +22,6 @@
   },
   {
    "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/alu.v",
    "Type" : "verilog"
   }
  ],

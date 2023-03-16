@@ -48,7 +48,7 @@ cpu uut (
 );
 
 initial begin
-	#300;
+	#400;
 	$finish;
 end
 

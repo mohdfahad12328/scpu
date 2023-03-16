@@ -4,12 +4,12 @@
     <Version>beta</Version>
     <Device id="GW1NR-9C" package="QFN88P" speed="6" partNumber="GW1NR-LV9QN88PC6/I5"/>
     <FileList>
+        <File path="/home/luffy/gowin-projects/scpu-fpga/src/alu.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/cpu.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/memory.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/register.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v" type="verilog"/>
-        <File path="/home/luffy/gowin-projects/scpu-fpga/src/alu.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

@@ -1,0 +1,4 @@
+ldr r0 #h01
+ldr r1 #h02
+add r0 r1
+str r0, h1000
