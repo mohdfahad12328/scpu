@@ -28,7 +28,7 @@ module cpu(
 	// alu cs
 	output 	alu_en,
 			alu_direct_data_bus_en,
-	output[7:0] alu_opr,
+	output[2:0] alu_opr,
 
 	// buses
 	output [7:0]data_bus,

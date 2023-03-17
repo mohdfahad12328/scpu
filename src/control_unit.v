@@ -29,7 +29,7 @@ module controlUint (
 			pc_inc,
 
 	// alu
-	output [7:0]
+	output [2:0]
 		   	alu_opr,
 	output 	alu_en,
 	output alu_direct_data_bus_en,
@@ -63,13 +63,20 @@ assign regs_waddr = r_waddr;
 
 
 // inst register
-reg [7:0] inst;
+reg [7:0] inst, inst_t;
 wire inst_r, inst_w;
-
+wire inst_t_r, inst_t_w;
 assign data_bus_out = inst_r ? inst : 8'bz;
+assign data_bus_out = inst_t_r ? inst_t : 8'bz;
+
 always @(posedge clk)
 	if (inst_w)
 		inst <= data_bus_in;
+
+always @(posedge clk) begin
+	if (inst_t_w)
+		inst_t <= data_bus_in;
+end
 
 // addr register
 reg [15:0] addrr;
@@ -85,7 +92,7 @@ always @(posedge clk) begin
 end
 
 // alu
-reg [7:0]alu_opr_r = 0;
+reg [3:0]alu_opr_r = 0;
 reg [7:0]r_alu_w = 0, r_alu_r_a = 0, r_alu_r_b = 0;
 assign alu_opr = alu_opr_r;
 localparam 	ALU_ADD = 2**0,
@@ -108,9 +115,10 @@ assign regs_alu_r_b = r_alu_r_b;
 	ncs --> no of control signals
 	acs --> all control signals
 */
-localparam ncs = 2 + 3 + 5 + 4 + 2; // alu,addrr,mem,pc,inst
+localparam ncs = 2 + 2 + 3 + 5 + 4 + 2; // isnt_t,alu,addrr,mem,pc,inst
 reg [ncs-1:0] acs = 0;
-assign {	alu_direct_data_bus_en ,alu_en,
+assign {	inst_t_r, inst_t_w,
+			alu_direct_data_bus_en ,alu_en,
 			addrr_r, addrr_wl, addrr_wh,
 			mem_ce, mem_oe, mem_r, mem_rst, mem_w,
 			pc_inc, pc_r, pc_rst, pc_w,
@@ -132,28 +140,10 @@ localparam 	INST_W = 2**0,
 			ADDRR_WL = 2**12,
 			ADDRR_R = 2**13,
 			ALU_EN  = 2**14,
-			ALU_D_EN = 2**15;
+			ALU_D_EN = 2**15,
+			INST_T_W = 2**16,
+			INST_T_R = 2**17;
 
-
-/*------------------------------------------------------------------------------
---  INSTRUCTIONS PARAMETERS
-------------------------------------------------------------------------------*/
-// immediate mode
-localparam 	LDR_I = 5'd0,
-			ADD_I = 5'd1,
-			SUB_I = 5'd2,
-			MUL_I = 5'd3,
-			DIV_I = 5'd4,
-			AND_I = 5'd5,
-			 OR_I = 5'd6,
-			XOR_I = 5'd7,
-			CMP_I = 5'd8;
-
-// register direct
-localparam STR_RD = 5'b10010;
-
-// register register
-localparam ADD_RR = 8'hFE;
 
 /*------------------------------------------------------------------------------
 --  STATE MACHINE PARAMETERS
@@ -230,6 +220,20 @@ if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	state <= EXECUTE1;
 end
 
+// REGISTER REGISTER
+if (inst <= 8'hff && inst >= 8'hf7) begin
+	// mem[pc];
+	acs <= MEM_CE|MEM_R|PC_R;
+	state <= EXECUTE1;
+end
+
+// REGISTER INDIRECT
+if (inst <= 8'hf6 && inst >= 8'hed) begin
+	// mem[pc];
+	acs <= MEM_CE|MEM_R|PC_R;
+	state <= EXECUTE1;
+end
+
 end
 
 /*------------------------------------------------------------------------------
@@ -263,6 +267,20 @@ if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	state <= EXECUTE2;
 end
 
+// REGISTER REGISTER
+if (inst <= 8'hff && inst >= 8'hf7) begin
+	// isnt_t <- mem[pc];
+	acs <= MEM_CE|MEM_OE|PC_R|INST_T_W;
+	state <= EXECUTE2;
+end
+
+// REGISTER INDIRECT
+if (inst <= 8'hf6 && inst >= 8'hed) begin
+	// isnt_t <- mem[pc];
+	acs <= MEM_CE|MEM_OE|PC_R|INST_T_W;
+	state <= EXECUTE2;
+end
+
 end
 
 /*------------------------------------------------------------------------------
@@ -277,16 +295,52 @@ if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	state <= EXECUTE3;
 end
 
-// case (inst)
-// ADD_RR: begin
-// 	acs <= ALU_EN|MEM_CE|MEM_OE|PC_R|PC_INC;
-// 	r_alu_r_a[data_bus_in[5:3]] <= HIGH;
-// 	r_alu_r_b[data_bus_in[2:0]] <= HIGH;
-// 	alu_opr_r <= ALU_ADD;
-// 	r_alu_w[data_bus_in[5:3]] <= HIGH;
-// 	state <= FETCH0;
-// end
-// endcase
+// REGISTER REGISTER
+if (inst <= 8'hff && inst >= 8'hf7) begin
+	// LDR
+	if(inst == 8'hff) begin
+		acs <= PC_INC;
+		r_wdata[inst_t[5:3]] <= HIGH;
+		r_rdata[inst_t[2:0]] <= HIGH;
+	end
+	else begin
+		acs <= ALU_EN|MEM_CE|MEM_OE|PC_R|PC_INC;
+		r_alu_r_a[inst_t[5:3]] <= HIGH;
+		r_alu_r_b[inst_t[2:0]] <= HIGH;
+		r_alu_w[inst_t[5:3]] <= HIGH;
+		alu_opr_r <= inst - 8'hfe;
+	end
+	state <= FETCH0;
+end
+
+// REGISTER INDIRECT
+if (inst <= 8'hf6 && inst >= 8'hed) begin
+	case(inst_t[1:0])
+		0: begin
+			r_raddr <= 2**0 + 2**1;
+		end
+		1: begin
+			r_raddr <= 2**2 + 2**3;
+		end
+		2: begin
+			r_raddr <= 2**4 + 2**5;
+		end
+		3: begin
+			r_raddr <= 2**6 + 2**7;
+		end
+	endcase
+	// STR
+	if(inst == 8'hed) begin
+		acs <= MEM_CE|MEM_W|PC_INC;
+		r_rdata[inst_t[4:2]] <= HIGH;
+		state <= FETCH0;
+	end
+	// LDR, ALU
+	else begin
+		acs <= MEM_CE|MEM_R|PC_INC;
+		state <= EXECUTE3;
+	end
+end
 
 end
 
@@ -300,6 +354,23 @@ if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	// addrr[7:0] <- mem[pc]; pc <- pc + 1;
 	acs <= MEM_CE|MEM_OE|PC_R|ADDRR_WL|PC_INC;
 	state <= EXECUTE4;
+end
+
+// REGISTER INDIRECT
+if (inst <= 8'hf6 && inst >= 8'hed) begin
+	// LDR
+	if (inst == 8'hf6) begin
+		acs <= MEM_CE|MEM_OE;
+		r_wdata[inst_t[4:2]] <= HIGH;
+	end
+	// ALU
+	else begin
+		acs <= MEM_CE|MEM_OE|ALU_EN|ALU_D_EN;
+		r_alu_r_a[inst_t[4:2]] <= HIGH;
+		r_alu_w[inst_t[4:2]] <= HIGH;
+		alu_opr_r <= inst - 8'hf5;
+	end
+	state <= FETCH0;
 end
 
 end

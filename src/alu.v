@@ -2,7 +2,7 @@ module alu (
 	input[7:0]	a_data_bus,
 				b_data_bus,
 	output[7:0] out_data_bus,
-	input [7:0] opr,
+	input [2:0] opr,
 	input en,
 	input [7:0] direct_data_bus,
 	input direct_data_bus_en

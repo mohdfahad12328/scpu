@@ -11,17 +11,28 @@ wire [7:0]
             regs_wdata,
             regs_raddr,
             regs_waddr;
+
 wire   		mem_ce,
             mem_rst,
             mem_w,
             mem_r,
             mem_oe;
+
 wire   		pc_w,
             pc_r,
             pc_rst,
             pc_inc;
+
+wire        alu_en,
+            alu_direct_data_bus_en;
+wire [2:0]  alu_opr;          
+wire [7:0]  alu_a_bus,
+			alu_b_bus,
+			alu_out_bus;
+
 wire [7:0]  data_bus;
 wire [15:0] addr_bus;
+
 wire [7:0] led;
 
 cpu uut (
@@ -41,6 +52,13 @@ cpu uut (
             .pc_rst(pc_rst),
             .pc_inc(pc_inc),
 			
+            .alu_en(alu_en),
+            .alu_direct_data_bus_en(alu_direct_data_bus_en),
+            .alu_opr(alu_opr),
+            .alu_a_bus(alu_a_bus),
+            .alu_b_bus(alu_b_bus),
+            .alu_out_bus(alu_out_bus),
+
 			.data_bus(data_bus),
 			.addr_bus(addr_bus),
 			.led(led),
