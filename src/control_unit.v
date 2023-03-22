@@ -10,7 +10,9 @@ module controlUint (
 			regs_wdata,
 			regs_raddr,
 			regs_waddr,
-			
+			regs_inc,
+			regs_dec,
+
 			regs_alu_r_a,
 			regs_alu_r_b,
 			regs_alu_w,
@@ -33,6 +35,7 @@ module controlUint (
 		   	alu_opr,
 	output 	alu_en,
 	output alu_direct_data_bus_en,
+	input [7:0] status_word,
 
 	// buses
 	input [7:0]   data_bus_in,
@@ -54,13 +57,16 @@ localparam LOW  = 0;
 reg [7:0] 	r_rdata = 0,
 			r_wdata = 0,
 			r_raddr = 0,
-			r_waddr = 0;
+			r_waddr = 0,
+			r_inc   = 0,
+			r_dec   = 0;
 
 assign regs_rdata = r_rdata;
 assign regs_wdata = r_wdata;
 assign regs_raddr = r_raddr;
 assign regs_waddr = r_waddr;
-
+assign regs_inc = r_inc;
+assign regs_dec = r_dec;
 
 // inst register
 reg [7:0] inst, inst_t;
@@ -92,21 +98,17 @@ always @(posedge clk) begin
 end
 
 // alu
-reg [3:0]alu_opr_r = 0;
+reg [2:0]alu_opr_r = 0;
 reg [7:0]r_alu_w = 0, r_alu_r_a = 0, r_alu_r_b = 0;
 assign alu_opr = alu_opr_r;
-localparam 	ALU_ADD = 2**0,
-			ALU_SUB = 2**1,
-			ALU_MUL = 2**2,
-			ALU_DIV = 2**3,
-			ALU_AND = 2**4,
-			ALU_OR  = 2**5,
-			ALU_XOR = 2**6,
-			ALU_CMP = 2**7;
-
 assign regs_alu_w = r_alu_w;
 assign regs_alu_r_a = r_alu_r_a;
 assign regs_alu_r_b = r_alu_r_b;
+localparam 	SW_Z = 7,
+			SW_E = 6,
+			SW_GT = 5,
+			SW_LT = 4,
+			SW_CF = 3;
 
 /*------------------------------------------------------------------------------
 --  ALL CONTROL SIGNALS
@@ -234,6 +236,19 @@ if (inst <= 8'hf6 && inst >= 8'hed) begin
 	state <= EXECUTE1;
 end
 
+// ONLY ADDRESS
+if (inst <= 8'hec && inst >= 8'he4) begin
+	// mem[pc];
+	acs <= MEM_CE|MEM_R|PC_R;
+	state <= EXECUTE1;
+end
+
+// IMPLIED
+if (inst == 8'he1) begin
+	acs <= PC_INC;
+	state <= FETCH0;
+end
+
 end
 
 /*------------------------------------------------------------------------------
@@ -252,9 +267,15 @@ if (inst[7:3] >= 5'b00000 && inst[7:3] <= 5'b01000) begin
 	end
 	// ALU
 	else begin
+			if(inst[7:3] - 1 == 3'b111) begin
+				r_alu_w <= LOW;
+			end
+			else begin
+				r_alu_w[inst[2:0]] <= HIGH;
+			end
 			acs <= MEM_CE|MEM_OE|PC_R|PC_INC|ALU_EN|ALU_D_EN;
 			r_alu_r_a[inst[2:0]] <= HIGH;
-			r_alu_w[inst[2:0]] <= HIGH;
+			alu_opr_r <= inst[7:3] - 1;
 			alu_opr_r <= inst[7:3] - 1;
 			state <= FETCH0;
 		end
@@ -281,6 +302,13 @@ if (inst <= 8'hf6 && inst >= 8'hed) begin
 	state <= EXECUTE2;
 end
 
+// ONLY ADDRESS
+if (inst <= 8'hec && inst >= 8'he4) begin
+	// addrr[15:8] <- mem[pc]; pc <- pc + 1;
+	acs <= MEM_CE|MEM_OE|PC_R|ADDRR_WH|PC_INC;
+	state <= EXECUTE2;
+end
+
 end
 
 /*------------------------------------------------------------------------------
@@ -304,10 +332,15 @@ if (inst <= 8'hff && inst >= 8'hf7) begin
 		r_rdata[inst_t[2:0]] <= HIGH;
 	end
 	else begin
+		if((inst - 8'hfe) == 3'b111)begin
+			r_alu_w <= LOW;	
+		end
+		else begin
+			r_alu_w[inst_t[5:3]] <= HIGH;	
+		end
 		acs <= ALU_EN|MEM_CE|MEM_OE|PC_R|PC_INC;
 		r_alu_r_a[inst_t[5:3]] <= HIGH;
 		r_alu_r_b[inst_t[2:0]] <= HIGH;
-		r_alu_w[inst_t[5:3]] <= HIGH;
 		alu_opr_r <= inst - 8'hfe;
 	end
 	state <= FETCH0;
@@ -342,6 +375,13 @@ if (inst <= 8'hf6 && inst >= 8'hed) begin
 	end
 end
 
+// ONLY ADDRESS
+if (inst <= 8'hec && inst >= 8'he4) begin
+	// mem[pc]
+	acs <= MEM_CE|MEM_R|PC_R;
+	state <= EXECUTE3;
+end
+
 end
 
 /*------------------------------------------------------------------------------
@@ -365,12 +405,24 @@ if (inst <= 8'hf6 && inst >= 8'hed) begin
 	end
 	// ALU
 	else begin
+		if ((inst - 8'hf5) == 8'b111) begin
+			r_alu_w <= LOW;
+		end
+		else begin
+			r_alu_w[inst_t[4:2]] <= HIGH;
+		end
 		acs <= MEM_CE|MEM_OE|ALU_EN|ALU_D_EN;
 		r_alu_r_a[inst_t[4:2]] <= HIGH;
-		r_alu_w[inst_t[4:2]] <= HIGH;
 		alu_opr_r <= inst - 8'hf5;
 	end
 	state <= FETCH0;
+end
+
+// ONLY ADDRESS
+if (inst <= 8'hec && inst >= 8'he4) begin
+	// addrr[7:0] <- mem[pc]; pc <- pc + 1;
+	acs <= MEM_CE|MEM_OE|PC_R|ADDRR_WL|PC_INC;
+	state <= EXECUTE4;
 end
 
 end
@@ -397,6 +449,42 @@ if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	end
 end
 
+
+// ONLY ADDRESS
+if (inst <= 8'hec && inst >= 8'he4) begin
+	case(inst)
+	// JMP
+	8'hec: 
+		acs <= PC_W|ADDRR_R;
+	// JZ
+	8'heb: 
+		acs <= (status_word[SW_Z]) ? PC_W|ADDRR_R : 0;
+	// JE
+	8'hea: 
+		acs <= (status_word[SW_E]) ? PC_W|ADDRR_R : 0;
+	// JNE
+	8'he9: 
+		acs <= (~status_word[SW_E]) ? PC_W|ADDRR_R : 0;
+	// JGT
+	8'he8:
+		acs <= (status_word[SW_GT]) ? PC_W|ADDRR_R : 0;
+	// JLT
+	8'he7:
+		acs <= (status_word[SW_LT]) ? PC_W|ADDRR_R : 0;
+	// JC
+	8'he6:
+		acs <= (status_word[SW_CF]) ? PC_W|ADDRR_R : 0;
+	// JNC
+	8'he5:
+		acs <= (~status_word[SW_CF]) ? PC_W|ADDRR_R : 0;
+	// CALL
+	8'he4: begin
+		acs <= 0;
+	end
+	endcase
+	state <= FETCH0;
+end
+
 end
 
 /*------------------------------------------------------------------------------
@@ -415,13 +503,21 @@ if(inst[7:3] >= 5'b01001 && inst[7:3] <= 5'b10010) begin
 	end
 	// ALU
 	else begin
+		if ((inst[7:3] - 5'b01010) == 3'b111) begin
+			r_alu_w <= LOW;
+		end
+		else begin
+			r_alu_w[inst[2:0]] <= HIGH;
+		end
 			acs <= MEM_CE|MEM_OE|ADDRR_R|ALU_EN|ALU_D_EN;
 			r_alu_r_a[inst[2:0]] <= HIGH;
-			r_alu_w[inst[2:0]] <= HIGH;
 			alu_opr_r <= inst[7:3] - 5'b01010;
 			state <= FETCH0;
 		end
 	end
+
+
+
 end
 
 endcase

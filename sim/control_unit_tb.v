@@ -4,13 +4,16 @@ module control_unit_tb ();
 
 reg clk = 1;
 
-always begin clk <= ~clk; #5; end
+always begin clk <= ~clk; #2; end
 
 wire [7:0]
             regs_rdata,
             regs_wdata,
             regs_raddr,
-            regs_waddr;
+            regs_waddr,
+			regs_alu_r_a,
+            regs_alu_r_b,
+            regs_alu_w;
 
 wire   		mem_ce,
             mem_rst,
@@ -40,6 +43,9 @@ cpu uut (
             .regs_wdata(regs_wdata),
             .regs_raddr(regs_raddr),
             .regs_waddr(regs_waddr),
+			.regs_alu_r_a(regs_alu_r_a),
+			.regs_alu_r_b(regs_alu_r_b),
+			.regs_alu_w(regs_alu_w),
 			
 			.mem_ce(mem_ce),
             .mem_rst(mem_rst),
@@ -58,6 +64,7 @@ cpu uut (
             .alu_a_bus(alu_a_bus),
             .alu_b_bus(alu_b_bus),
             .alu_out_bus(alu_out_bus),
+				
 
 			.data_bus(data_bus),
 			.addr_bus(addr_bus),
@@ -66,7 +73,7 @@ cpu uut (
 );
 
 initial begin
-	#400;
+	#20000;
 	$finish;
 end
 

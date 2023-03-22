@@ -12,7 +12,8 @@ module memory(
     r,
     rst,
     oe,
-    output [7:0]led
+    output [7:0]led,
+    output tx
 );
 
 localparam RAM_SIZE = 2**15;
@@ -62,7 +63,8 @@ module io_memory(
     r,
     rst,
     oe,
-    output [7:0]led
+    output [7:0]led,
+    output tx
 );
 
 localparam IO_SIZE = 4; 
@@ -72,7 +74,24 @@ reg [7:0] data_reg;
 
 assign out_data = (ce & oe) ? data_reg : 8'bz;
 
-assign led = {mem[0][7:6], ~mem[0][5:0]};
+/*
+INTERFACES
+0   : led
+1.0 : uart-send-signal
+1.1 : uart-send-ack
+2   : uart-send-data  
+*/
+assign led = {mem[0][7:6], mem[0][5:0]};
+
+wire em_ack;
+emitter em(
+    .tx(tx),
+    .dataIn(mem[2]),
+    .clk(clk),
+    .write(mem[1][0]),
+    .ack(em_ack)
+);
+
 
 always @(posedge clk) begin
     if (rst)
@@ -84,7 +103,6 @@ always @(posedge clk) begin
 end
 
 endmodule
-
 /*------------------------------------------------------------------------------
 --  RAM MEMORY MODULE
 ------------------------------------------------------------------------------*/

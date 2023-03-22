@@ -10,6 +10,7 @@
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/memory.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/register.v" type="verilog"/>
         <File path="/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v" type="verilog"/>
+        <File path="/home/luffy/gowin-projects/scpu-fpga/src/uart.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

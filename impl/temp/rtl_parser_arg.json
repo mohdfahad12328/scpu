@@ -23,6 +23,10 @@
   {
    "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v",
    "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/luffy/gowin-projects/scpu-fpga/src/uart.v",
+   "Type" : "verilog"
   }
  ],
  "IncludePath" : [
