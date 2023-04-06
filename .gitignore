@@ -1,3 +1,4 @@
 bin/
 impl/**
-impl/temp/*
+arch
+arch.excalidraw
