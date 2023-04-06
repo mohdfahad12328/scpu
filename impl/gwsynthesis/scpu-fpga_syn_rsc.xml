@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module name="cpu">
- <SubModule name="r0" Register="8" Lut="181"/>
- <SubModule name="r1" Register="8" Lut="9"/>
- <SubModule name="r2" Register="8" Lut="9"/>
- <SubModule name="r3" Register="8" Lut="9"/>
- <SubModule name="r4" Register="8" Lut="9"/>
- <SubModule name="r5" Register="8" Lut="9"/>
- <SubModule name="r6" Register="8" Lut="9"/>
- <SubModule name="r7" Register="8" Lut="9"/>
+ <SubModule name="r0" Register="8" Lut="183"/>
+ <SubModule name="r1" Register="8" Lut="11"/>
+ <SubModule name="r2" Register="8" Lut="11"/>
+ <SubModule name="r3" Register="8" Lut="11"/>
+ <SubModule name="r4" Register="8" Lut="11"/>
+ <SubModule name="r5" Register="8" Lut="11"/>
+ <SubModule name="r6" Register="8" Lut="11"/>
+ <SubModule name="r7" Register="8" Lut="11"/>
  <SubModule name="mem">
-  <SubModule name="io_mem" Register="40" Lut="32"/>
+  <SubModule name="io_mem" Register="32" Lut="37">
+   <SubModule name="em" Register="41" Lut="79"/>
+  </SubModule>
   <SubModule name="ram_mem" Register="1" Lut="3" Bsram="16"/>
  </SubModule>
  <SubModule name="pc" Register="16" Lut="91"/>
- <SubModule name="alu" Register="5" Alu="48" Lut="204" Dsp="1"/>
- <SubModule name="control_unit" Register="90" Lut="269"/>
+ <SubModule name="alu" Register="5" Alu="47" Lut="202" Dsp="1"/>
+ <SubModule name="control_unit" Register="98" Lut="307"/>
 </Module>

@@ -1,0 +1,1 @@
+sudo openFPGALoader -b tangnano9k -f impl/pnr/scpu-fpga.fs

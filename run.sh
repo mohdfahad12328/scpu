@@ -1,0 +1,1 @@
+scpu-asm src/cmd.asm src/data.txt

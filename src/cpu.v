@@ -2,8 +2,8 @@
 --  CPU  
 ------------------------------------------------------------------------------*/
 
-`define SYNTH_VIEW
-// `define __GOWIN__
+// `define SYNTH_VIEW
+`define __GOWIN__
 
 module cpu(
 
@@ -42,6 +42,7 @@ module cpu(
 
 `endif
 
+output tx,
 output [7:0]led,
 input clk
 );
@@ -279,6 +280,7 @@ memory mem(
 	.oe(mem_oe),
 	.rst(mem_rst),
 	
+	.tx(tx),
 	.led(led),
 	
 	.clk(clk)

@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 71,
+    "InstLine" : 72,
     "InstName" : "r0",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -17,7 +17,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 95,
+    "InstLine" : 96,
     "InstName" : "r1",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -25,7 +25,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 119,
+    "InstLine" : 120,
     "InstName" : "r2",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -33,7 +33,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 143,
+    "InstLine" : 144,
     "InstName" : "r3",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -41,7 +41,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 167,
+    "InstLine" : 168,
     "InstName" : "r4",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -49,7 +49,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 191,
+    "InstLine" : 192,
     "InstName" : "r5",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -57,7 +57,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 215,
+    "InstLine" : 216,
     "InstName" : "r6",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -65,7 +65,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 239,
+    "InstLine" : 240,
     "InstName" : "r7",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/register.v",
     "ModuleLine" : 17,
@@ -73,7 +73,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 270,
+    "InstLine" : 271,
     "InstName" : "mem",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
     "ModuleLine" : 5,
@@ -84,12 +84,12 @@
       "InstLine" : 24,
       "InstName" : "io_mem",
       "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
-      "ModuleLine" : 56,
+      "ModuleLine" : 57,
       "ModuleName" : "io_memory",
       "SubInsts" : [
        {
         "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
-        "InstLine" : 87,
+        "InstLine" : 95,
         "InstName" : "em",
         "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/uart.v",
         "ModuleLine" : 13,
@@ -99,17 +99,17 @@
      },
      {
       "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
-      "InstLine" : 37,
+      "InstLine" : 38,
       "InstName" : "ram_mem",
       "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/memory.v",
-      "ModuleLine" : 110,
+      "ModuleLine" : 133,
       "ModuleName" : "ram_memory"
      }
     ]
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 294,
+    "InstLine" : 296,
     "InstName" : "pc",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/special_regs.v",
     "ModuleLine" : 1,
@@ -117,7 +117,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 315,
+    "InstLine" : 317,
     "InstName" : "alu",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/alu.v",
     "ModuleLine" : 1,
@@ -125,7 +125,7 @@
    },
    {
     "InstFile" : "/home/luffy/gowin-projects/scpu-fpga/src/cpu.v",
-    "InstLine" : 330,
+    "InstLine" : 332,
     "InstName" : "control_unit",
     "ModuleFile" : "/home/luffy/gowin-projects/scpu-fpga/src/control_unit.v",
     "ModuleLine" : 5,

@@ -4,7 +4,7 @@ module control_unit_tb ();
 
 reg clk = 1;
 
-always begin clk <= ~clk; #2; end
+always begin clk <= ~clk; #1; end
 
 wire [7:0]
             regs_rdata,
@@ -37,6 +37,7 @@ wire [7:0]  data_bus;
 wire [15:0] addr_bus;
 
 wire [7:0] led;
+wire tx;
 
 cpu uut (
             .regs_rdata(regs_rdata),
@@ -69,6 +70,7 @@ cpu uut (
 			.data_bus(data_bus),
 			.addr_bus(addr_bus),
 			.led(led),
+            .tx(tx),
 			.clk(clk)
 );
 

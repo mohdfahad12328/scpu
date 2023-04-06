@@ -30,6 +30,7 @@ io_memory io_mem (
     .w(w),
     .r(r),
     .rst(rst),
+    .tx(tx),
     .led(led),
     .clk(clk)
 );
@@ -63,13 +64,15 @@ module io_memory(
     r,
     rst,
     oe,
-    output [7:0]led,
-    output tx
+
+    output tx,
+    output [7:0]led
 );
 
 localparam IO_SIZE = 4; 
 
-reg [7:0] mem [IO_SIZE-1:0];
+reg [7:0] led_mem [0:0];
+reg [7:0] uart_mem[1:0];
 reg [7:0] data_reg;
 
 assign out_data = (ce & oe) ? data_reg : 8'bz;
@@ -81,26 +84,46 @@ INTERFACES
 1.1 : uart-send-ack
 2   : uart-send-data  
 */
-assign led = {mem[0][7:6], mem[0][5:0]};
+
+assign led = led_mem[0];
+localparam LED_MEM = 0;
+localparam  UART_MEM_START = 1,
+            UART_MEM_END = 2;
 
 wire em_ack;
+
 emitter em(
     .tx(tx),
-    .dataIn(mem[2]),
+    .dataIn(uart_mem[1]),
     .clk(clk),
-    .write(mem[1][0]),
+    .write(uart_mem[0][0]),
     .ack(em_ack)
 );
 
-
 always @(posedge clk) begin
-    if (rst)
+    if (rst) begin
         data_reg <= 0;
-    else if(ce & w)
-        mem[addr] <= in_data;
-    else if(ce & r)
-        data_reg <= mem[addr];
+    end
+    else if(ce & w) begin
+        if(addr == LED_MEM)
+            led_mem[addr - LED_MEM] <= in_data;
+        else if (addr >= UART_MEM_START && addr <= UART_MEM_END)
+            uart_mem[addr - UART_MEM_START] <= in_data;
+    end
+    else if(ce & r) begin
+        if(addr == LED_MEM)
+            data_reg <= led_mem[addr - LED_MEM];
+        else if (addr >= UART_MEM_START && addr <= UART_MEM_END)
+            data_reg <= uart_mem[addr - UART_MEM_START];
+    end
+    else begin
+       if(em_ack) begin
+            uart_mem[0][1] <= 1;
+       end
+    end
 end
+
+// TODO: here priority is given to program rather than io, is it fine?
 
 endmodule
 /*------------------------------------------------------------------------------

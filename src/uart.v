@@ -24,7 +24,7 @@ module emitter
 
 reg [3:0] state = 0;
 reg [24:0] counter = 0;
-reg [2:0]  bitCounter = 0;
+reg [3:0]  bitCounter = 0;
 reg [7:0] dataOut = 0;
 
 reg txReg = 1;
