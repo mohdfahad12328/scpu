@@ -22,7 +22,6 @@ module register(
     input raddr, waddr,
     input [7:0] in_addr,
     output [7:0] out_addr,
-    input inc, dec,
     // alu
     input alu_r_a, alu_r_b, alu_w,
     output [7:0] alu_a_bus, alu_b_bus,
@@ -46,10 +45,6 @@ always @(posedge clk) begin
         r <= in_addr;
     else if (alu_w)
         r <= alu_out_bus;
-    else if (inc)
-        r <= r+1;
-    else if (dec)
-        r <= r-1;
 end
 
 endmodule

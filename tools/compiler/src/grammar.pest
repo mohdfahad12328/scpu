@@ -1,0 +1,25 @@
+WHITESPACE = _{ " " | "\t" | "\n" }
+
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
+
+value    = @{ hexValue | ASCII_DIGIT+ }
+hexValue = @{ "0x" ~ (ASCII_DIGIT | ^"a" | ^"b" | ^"c" | ^"d" | ^"e" | ^"f")+ }
+
+expr       = {
+    (assignExpr | createExpr) ~ ";"
+}
+assignExpr = { (value | ident) ~ "=" ~ (value | ident) }
+createExpr = { "let" ~ ( ( ident ~ ( "=" ~ value )? ) | ( ident ~ "," ) ) }
+
+stmt = {
+    defineStmt
+  | ( createExpr ~ ";" )
+}
+
+defineStmt = { "#define" ~ ident ~ value }
+
+func = {
+    "fn" ~ ident ~ "(" ~ (ident)* ~ ")" ~ "{" ~ (expr)+ ~ "}"
+}
+
+program = _{ SOI ~ (stmt | (func))+ ~ EOI }

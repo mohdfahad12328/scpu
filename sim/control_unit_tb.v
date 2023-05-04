@@ -28,7 +28,7 @@ wire   		pc_w,
 
 wire        alu_en,
             alu_direct_data_bus_en;
-wire [2:0]  alu_opr;          
+wire [3:0]  alu_opr;          
 wire [7:0]  alu_a_bus,
 			alu_b_bus,
 			alu_out_bus;
@@ -76,7 +76,6 @@ cpu uut (
 
 initial begin
 	#20000;
-	$finish;
 end
 
 endmodule : control_unit_tb

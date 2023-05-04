@@ -1,0 +1,7 @@
+fn main() {
+  let a = 0xff;
+  let c;
+  let b;
+  b = a;
+  c = b;
+}

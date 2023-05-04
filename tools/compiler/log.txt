@@ -1,0 +1,144 @@
+[
+    Pair {
+        rule: stmt,
+        span: Span {
+            str: "#define P1 0x8000",
+            start: 0,
+            end: 17,
+        },
+        inner: [
+            Pair {
+                rule: defineStmt,
+                span: Span {
+                    str: "#define P1 0x8000",
+                    start: 0,
+                    end: 17,
+                },
+                inner: [
+                    Pair {
+                        rule: ident,
+                        span: Span {
+                            str: "P1",
+                            start: 8,
+                            end: 10,
+                        },
+                        inner: [],
+                    },
+                    Pair {
+                        rule: value,
+                        span: Span {
+                            str: "0x8000",
+                            start: 11,
+                            end: 17,
+                        },
+                        inner: [],
+                    },
+                ],
+            },
+        ],
+    },
+    Pair {
+        rule: function,
+        span: Span {
+            str: "fn main() {\n  let a = 0xff;\n  P1 = a;\n}",
+            start: 19,
+            end: 58,
+        },
+        inner: [
+            Pair {
+                rule: ident,
+                span: Span {
+                    str: "main",
+                    start: 22,
+                    end: 26,
+                },
+                inner: [],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "let a = 0xff;",
+                    start: 33,
+                    end: 46,
+                },
+                inner: [
+                    Pair {
+                        rule: createExpr,
+                        span: Span {
+                            str: "let a = 0xff",
+                            start: 33,
+                            end: 45,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "a",
+                                    start: 37,
+                                    end: 38,
+                                },
+                                inner: [],
+                            },
+                            Pair {
+                                rule: value,
+                                span: Span {
+                                    str: "0xff",
+                                    start: 41,
+                                    end: 45,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "P1 = a;",
+                    start: 49,
+                    end: 56,
+                },
+                inner: [
+                    Pair {
+                        rule: assignExpr,
+                        span: Span {
+                            str: "P1 = a",
+                            start: 49,
+                            end: 55,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "P1",
+                                    start: 49,
+                                    end: 51,
+                                },
+                                inner: [],
+                            },
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "a",
+                                    start: 54,
+                                    end: 55,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    Pair {
+        rule: EOI,
+        span: Span {
+            str: "",
+            start: 58,
+            end: 58,
+        },
+        inner: [],
+    },
+]

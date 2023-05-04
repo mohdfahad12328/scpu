@@ -71,8 +71,7 @@ module io_memory(
 
 localparam IO_SIZE = 4; 
 
-reg [7:0] led_mem [0:0];
-reg [7:0] uart_mem[1:0];
+reg [7:0] led_data;
 reg [7:0] data_reg;
 
 assign out_data = (ce & oe) ? data_reg : 8'bz;
@@ -82,23 +81,36 @@ INTERFACES
 0   : led
 1.0 : uart-send-signal
 1.1 : uart-send-ack
-2   : uart-send-data  
+2   : uart-send-data
 */
 
-assign led = led_mem[0];
-localparam LED_MEM = 0;
-localparam  UART_MEM_START = 1,
-            UART_MEM_END = 2;
+assign led = led_data;
+localparam LED_MEM = 0, UART_CONF = 1, UART_DATA = 2;
 
-wire em_ack;
+reg [7:0] uart_conf;
+reg [7:0] uart_data;
 
-emitter em(
-    .tx(tx),
-    .dataIn(uart_mem[1]),
-    .clk(clk),
-    .write(uart_mem[0][0]),
-    .ack(em_ack)
+wire txActive, txActive, txDv;
+
+uart_tx #(
+    .CLKS_PER_BIT(234)
+) utx (
+    .i_Clock(clk),
+    .i_Tx_DV(uart_conf[0]),
+    .i_Tx_Byte(uart_data),
+    .o_Tx_Active(txActive),
+    .o_Tx_Serial(tx),
+    .o_Tx_Done(txDone)
 );
+
+always @* begin
+    if (ce && w && (addr == UART_CONF)) begin
+        uart_conf <= in_data;
+    end
+    else begin
+        uart_conf[1] <= txDone;
+    end
+end
 
 always @(posedge clk) begin
     if (rst) begin
@@ -106,20 +118,17 @@ always @(posedge clk) begin
     end
     else if(ce & w) begin
         if(addr == LED_MEM)
-            led_mem[addr - LED_MEM] <= in_data;
-        else if (addr >= UART_MEM_START && addr <= UART_MEM_END)
-            uart_mem[addr - UART_MEM_START] <= in_data;
+            led_data <= in_data;
+        else if (addr == UART_DATA)
+            uart_data <= in_data;
     end
     else if(ce & r) begin
         if(addr == LED_MEM)
-            data_reg <= led_mem[addr - LED_MEM];
-        else if (addr >= UART_MEM_START && addr <= UART_MEM_END)
-            data_reg <= uart_mem[addr - UART_MEM_START];
-    end
-    else begin
-       if(em_ack) begin
-            uart_mem[0][1] <= 1;
-       end
+            data_reg <= led_data;
+        else if (addr == UART_DATA)
+            data_reg <= uart_data;
+        else if (addr == UART_CONF)
+        data_reg <= uart_conf;
     end
 end
 

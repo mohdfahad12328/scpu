@@ -10,8 +10,6 @@ module controlUint (
 			regs_wdata,
 			regs_raddr,
 			regs_waddr,
-			regs_inc,
-			regs_dec,
 
 			regs_alu_r_a,
 			regs_alu_r_b,
@@ -31,7 +29,7 @@ module controlUint (
 			pc_inc,
 
 	// alu
-	output [2:0]
+	output [3:0]
 		   	alu_opr,
 	output 	alu_en,
 	output alu_direct_data_bus_en,
@@ -57,16 +55,12 @@ localparam LOW  = 0;
 reg [7:0] 	r_rdata = 0,
 			r_wdata = 0,
 			r_raddr = 0,
-			r_waddr = 0,
-			r_inc   = 0,
-			r_dec   = 0;
+			r_waddr = 0;
 
 assign regs_rdata = r_rdata;
 assign regs_wdata = r_wdata;
 assign regs_raddr = r_raddr;
 assign regs_waddr = r_waddr;
-assign regs_inc = r_inc;
-assign regs_dec = r_dec;
 
 // inst register
 reg [7:0] inst, inst_t;
@@ -97,8 +91,26 @@ always @(posedge clk) begin
 	end
 end
 
+// stack pointer
+// 0111 1111 0000 0000 - SP DEFAULT 7F00 - 7FFF - 8000
+// 1000 0000 0000 0000 - IO 
+// last 256 bytes
+reg [15:0] sp = 16'h7f00;
+wire sp_r, sp_w, sp_inc, sp_dec, sp_r_1;
+assign addr_bus_out = sp_r ? sp : (sp_r_1 ? (sp - 1) : 16'bz);
+always @(posedge clk) begin
+	if(sp_w)
+		sp <= addr_bus_in;
+	else if(sp_inc)
+		sp <= sp + 1;
+	else if(sp_dec)
+		sp <= sp - 1;
+	else
+		sp <= sp;
+end
+
 // alu
-reg [2:0]alu_opr_r = 0;
+reg [3:0]alu_opr_r = 0;
 reg [7:0]r_alu_w = 0, r_alu_r_a = 0, r_alu_r_b = 0;
 assign alu_opr = alu_opr_r;
 assign regs_alu_w = r_alu_w;
@@ -117,9 +129,11 @@ localparam 	SW_Z = 7,
 	ncs --> no of control signals
 	acs --> all control signals
 */
-localparam ncs = 2 + 2 + 3 + 5 + 4 + 2; // isnt_t,alu,addrr,mem,pc,inst
+ // sp,isnt_t,alu,addrr,mem,pc,inst
+localparam ncs = 5 + 2 + 2 + 3 + 5 + 4 + 2;
 reg [ncs-1:0] acs = 0;
-assign {	inst_t_r, inst_t_w,
+assign {	sp_r_1 ,sp_r, sp_w, sp_inc, sp_dec,
+			inst_t_r, inst_t_w,
 			alu_direct_data_bus_en ,alu_en,
 			addrr_r, addrr_wl, addrr_wh,
 			mem_ce, mem_oe, mem_r, mem_rst, mem_w,
@@ -144,8 +158,12 @@ localparam 	INST_W = 2**0,
 			ALU_EN  = 2**14,
 			ALU_D_EN = 2**15,
 			INST_T_W = 2**16,
-			INST_T_R = 2**17;
-
+			INST_T_R = 2**17,
+			SP_DEC = 2**18,
+			SP_INC = 2**19,
+			SP_W = 2**20,
+			SP_R = 2**21,
+			SP_R_1 = 2**22;
 
 /*------------------------------------------------------------------------------
 --  STATE MACHINE PARAMETERS
@@ -177,7 +195,7 @@ WAIT: begin
 			state <= FETCH0;
 		else state <= state;
 	end
-		
+
 /*------------------------------------------------------------------------------
 --  FETCH
 ------------------------------------------------------------------------------*/
@@ -243,12 +261,34 @@ if (inst <= 8'hec && inst >= 8'he4) begin
 	state <= EXECUTE1;
 end
 
-// IMPLIED
-if (inst == 8'he1) begin
-	acs <= PC_INC;
-	state <= FETCH0;
+// ONLY REGISTER
+if (inst[7:3] >= 5'b10011 && inst[7:3] <= 5'b11011) begin
+	// PUSH
+	if(inst[7:3] == 5'b10011) begin
+		acs <= MEM_CE|MEM_W|SP_R|SP_INC;
+		r_rdata[inst[2:0]] <= HIGH;
+		state <= FETCH0;
+	end
+	// POP
+	else if(inst[7:3] == 5'b10100) begin
+		acs <= MEM_CE|MEM_R|SP_R_1;
+		state <= EXECUTE1;
+	end
+	else begin
+		acs <= ALU_EN;
+		state <= FETCH0;
+		r_alu_r_a[inst[2:0]] <= HIGH;
+		alu_opr_r <= (inst[7:3] - 5'b10101) + 8;
+		r_alu_w[inst[2:0]] <= HIGH;
+	end
 end
-
+// SPECIAL INSTS
+// LDSP
+if (inst == 8'he3) begin 
+	// mem[pc];
+	acs <= MEM_CE|MEM_R|PC_R;
+	state <= EXECUTE1;
+end
 end
 
 /*------------------------------------------------------------------------------
@@ -306,6 +346,24 @@ end
 if (inst <= 8'hec && inst >= 8'he4) begin
 	// addrr[15:8] <- mem[pc]; pc <- pc + 1;
 	acs <= MEM_CE|MEM_OE|PC_R|ADDRR_WH|PC_INC;
+	state <= EXECUTE2;
+end
+
+// ONLY REGISTER
+if (inst[7:3] >= 5'b10011 && inst[7:3] <= 5'b11011) begin
+	// POP
+	if(inst[7:3] == 5'b10100) begin
+		acs <= MEM_CE|MEM_OE|SP_R_1|SP_DEC;
+		r_wdata[inst[2:0]] <= HIGH;
+		state <= FETCH0;
+	end
+end
+
+// SPECIAL INSTS
+// LDSP
+if (inst == 8'he3) begin 
+	// inst_t <- mem[pc];
+	acs <= MEM_CE|MEM_OE|PC_R|INST_T_W;
 	state <= EXECUTE2;
 end
 
@@ -380,6 +438,28 @@ if (inst <= 8'hec && inst >= 8'he4) begin
 	// mem[pc]
 	acs <= MEM_CE|MEM_R|PC_R;
 	state <= EXECUTE3;
+end
+
+// SPECIAL INSTS
+// LDSP
+if (inst == 8'he3) begin 
+	// sp <- inst_t[1:0]
+  case(inst_t[1:0])
+		0: begin
+			r_raddr <= 2**0 + 2**1;
+		end
+		1: begin
+			r_raddr <= 2**2 + 2**3;
+		end
+		2: begin
+			r_raddr <= 2**4 + 2**5;
+		end
+		3: begin
+			r_raddr <= 2**6 + 2**7;
+		end
+	endcase
+  acs <= SP_W|PC_INC;
+  state <= FETCH0; 
 end
 
 end

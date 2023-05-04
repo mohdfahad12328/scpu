@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <assert.h>
 
 using namespace std;
 
@@ -25,6 +26,8 @@ class App {
   unordered_map<string_view, vector<string_view>> gInsts;
   unordered_map<string_view, string_view> longRegs = {
       {"@r01", "00"}, {"@r23", "01"}, {"@r45", "10"}, {"@r67", "11"}};
+  unordered_map<string_view, string_view> longRegsDirect = {
+     {"r01", "00"}, {"r23", "01"}, {"r45", "10"}, {"r67", "11"}};
   size_t it;
   size_t ln;
   size_t co;
@@ -121,16 +124,50 @@ private:
           labels[l] = co;
         }
       }
-
+      // data
+      else if (ct[0] == '.') {
+        nt = ntok();
+        if(ps == ParseStage::insts) {
+          if(ct == ".b" || ct == ".db") {
+            outfile << numToBin(nt) << endl;
+          }
+        }
+        else if (ps == ParseStage::labels){
+          if(ct == ".b") {
+            co += 1;
+          }
+          else if (ct == ".db") {
+            co += 2;
+          }
+          else if(ct == ".str"){
+            assert(0 && "TODO: .str not implemented");
+            stringstream ss;
+            nt = ntok();
+            ss << nt;
+            while(nt[nt.length() - 1] != '"'){
+              nt = ntok();
+              ss << nt;
+            } 
+            cout << "got string!\n" << ss.str() << endl;
+          }
+        }
+      }
       // insts
+      // special instructions
+      else if (ct == "ldsp") {
+        nt = ntok();
+        if (ps == ParseStage::insts) {
+          outfile << "11100011\n000000" << longRegsDirect[nt] << endl;
+        }
+        co += 2;
+      }
       // only register | push r0
       else if (onlyRegs.find(ct) != onlyRegs.end()) {
         nt = ntok();
         if (ps == ParseStage::insts) {
           outfile << onlyRegs[ct] << regToBin(nt) << endl;
         }
-        co += 2;
-        continue;
+        co += 1;
       }
       // only address | jmp 0hffff
       else if (onlyAddr.find(ct) != onlyAddr.end()) {

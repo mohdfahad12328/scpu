@@ -39,7 +39,7 @@
 
 ## Future Goals
 
-- [ ] implement stack and remaining ALU operations
+- [x] implement stack and remaining ALU operations
 - [ ] Emulator for testing without hardware
 - [ ] More test cases
 - [ ] adding more hardware features

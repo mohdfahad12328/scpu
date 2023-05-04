@@ -3,7 +3,7 @@ module alu (
 				b_data_bus,
 	output[7:0] out_data_bus,
 	output[7:0] status_word,
-	input [2:0] opr,
+	input [3:0] opr,
 	input en,
 	input [7:0] direct_data_bus,
 	input direct_data_bus_en,
@@ -17,7 +17,14 @@ localparam 	ADD = 0,
 			AND = 4,
 			OR  = 5,
 			XOR = 6,
-			CMP = 7; 
+			CMP = 7,
+			INC = 8,
+			DEC = 9,
+			NOT = 10,
+			SHL = 11,
+			SHR = 12,
+			RTR = 13,
+			RTL = 14; 
 
 // z|e|gt|lt|cf|0|0|0
 reg [7:0]sw = 0;
@@ -39,6 +46,14 @@ assign out_data_bus = (en && (opr == DIV)) ? (a_data_bus / b_t_data_bus) : 8'bz;
 assign out_data_bus = (en && (opr == AND)) ? (a_data_bus & b_t_data_bus) : 8'bz;
 assign out_data_bus = (en && (opr == OR )) ? (a_data_bus | b_t_data_bus) : 8'bz;
 assign out_data_bus = (en && (opr == XOR)) ? (a_data_bus ^ b_t_data_bus) : 8'bz;
+
+assign out_data_bus = (en && (opr == INC)) ? (a_data_bus + 1) : 8'bz;
+assign out_data_bus = (en && (opr == DEC)) ? (a_data_bus - 1) : 8'bz;
+assign out_data_bus = (en && (opr == NOT)) ? (~a_data_bus) : 8'bz;
+assign out_data_bus = (en && (opr == SHL)) ? (a_data_bus << 1) : 8'bz;
+assign out_data_bus = (en && (opr == SHR)) ? (a_data_bus >> 1) : 8'bz;
+assign out_data_bus = (en && (opr == RTL)) ? ({a_data_bus[6:0],a_data_bus[7]}) : 8'bz;
+assign out_data_bus = (en && (opr == RTR)) ? ({a_data_bus[0],a_data_bus[7:1]}) : 8'bz;
 
 
 assign sw_w[SW_Z] = en && (opr == CMP) && (a_data_bus == 0);

@@ -2,7 +2,7 @@
 --  CPU  
 ------------------------------------------------------------------------------*/
 
-// `define SYNTH_VIEW
+//`define SYNTH_VIEW
 `define __GOWIN__
 
 module cpu(
@@ -18,8 +18,6 @@ module cpu(
 			regs_alu_r_a,
 			regs_alu_r_b,
 			regs_alu_w,
-			regs_inc,
-			regs_dec,
 
 	// memory cs 
 	output	mem_ce, mem_r, mem_w, mem_rst, mem_oe,
@@ -30,7 +28,7 @@ module cpu(
 	// alu cs
 	output 	alu_en,
 			alu_direct_data_bus_en,
-	output[2:0] alu_opr,
+	output[3:0] alu_opr,
 	output[7:0] status_word,
 
 	// buses
@@ -65,7 +63,6 @@ wire [7:0] alu_a_bus, alu_b_bus, alu_out_bus;
 
 wire [7:0] regs_raddr, regs_waddr, regs_rdata, regs_wdata;
 wire [7:0] regs_alu_r_a, regs_alu_r_b, regs_alu_w;
-wire [7:0] regs_inc, regs_dec;
 
 `endif
 
@@ -74,9 +71,6 @@ register r0(
 	.wdata(regs_wdata[0]),
 	.in_data(data_bus),
 	.out_data(data_bus),
-	
-	.inc(regs_inc[0]),
-	.dec(regs_dec[0]),
 
 	.raddr(regs_raddr[0]),
 	.waddr(regs_waddr[0]),
@@ -99,8 +93,6 @@ register r1(
 	.in_data(data_bus),
 	.out_data(data_bus),
 
-	.inc(regs_inc[1]),
-	.dec(regs_dec[1]),
 
 	.raddr(regs_raddr[1]),
 	.waddr(regs_waddr[1]),
@@ -123,9 +115,6 @@ register r2(
 	.in_data(data_bus),
 	.out_data(data_bus),
 
-	.inc(regs_inc[2]),
-	.dec(regs_dec[2]),
-
 	.raddr(regs_raddr[2]),
 	.waddr(regs_waddr[2]),
 	.in_addr(addr_bus[15:8]),
@@ -147,9 +136,6 @@ register r3(
 	.in_data(data_bus),
 	.out_data(data_bus),
 
-	.inc(regs_inc[3]),
-	.dec(regs_dec[3]),
-
 	.raddr(regs_raddr[3]),
 	.waddr(regs_waddr[3]),
 	.in_addr(addr_bus[7:0]),
@@ -170,9 +156,6 @@ register r4(
 	.wdata(regs_wdata[4]),
 	.in_data(data_bus),
 	.out_data(data_bus),
-
-	.inc(regs_inc[4]),
-	.dec(regs_dec[4]),
 	
 	.raddr(regs_raddr[4]),
 	.waddr(regs_waddr[4]),
@@ -195,9 +178,6 @@ register r5(
 	.in_data(data_bus),
 	.out_data(data_bus),
 
-	.inc(regs_inc[5]),
-	.dec(regs_dec[5]),
-  
 	.raddr(regs_raddr[5]),
 	.waddr(regs_waddr[5]),
 	.in_addr(addr_bus[7:0]),
@@ -224,9 +204,6 @@ register r6(
 	.in_addr(addr_bus[15:8]),
 	.out_addr(addr_bus[15:8]),
 
-	.inc(regs_inc[6]),
-	.dec(regs_dec[6]),
-	
 	.alu_r_a(regs_alu_r_a[6]),
 	.alu_r_b(regs_alu_r_b[6]),
 	.alu_w(regs_alu_w[6]),
@@ -242,9 +219,6 @@ register r7(
 	.wdata(regs_wdata[7]),
 	.in_data(data_bus),
 	.out_data(data_bus),
-	
-	.inc(regs_inc[7]),
-	.dec(regs_dec[7]),
 
 	.raddr(regs_raddr[7]),
 	.waddr(regs_waddr[7]),
@@ -311,7 +285,7 @@ pc pc(
 `ifndef SYNTH_VIEW
 wire alu_en, alu_direct_data_bus_en;
 wire [7:0] status_word;
-wire [2:0] alu_opr; 
+wire [3:0] alu_opr; 
 `endif
 
 alu alu(
@@ -333,9 +307,7 @@ controlUint control_unit(
 	.regs_rdata(regs_rdata),
 	.regs_wdata(regs_wdata),
 	.regs_raddr(regs_raddr),
-	.regs_waddr(regs_waddr),
-	.regs_inc(regs_inc),
-	.regs_dec(regs_dec), 
+	.regs_waddr(regs_waddr), 
 
 	.regs_alu_r_a(regs_alu_r_a),
 	.regs_alu_r_b(regs_alu_r_b),

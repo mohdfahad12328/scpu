@@ -1,0 +1,202 @@
+[
+    Pair {
+        rule: func,
+        span: Span {
+            str: "fn main() {\n  let a = 0xff;\n  let c;\n  let b;\n  b = a;\n  c = b;\n}",
+            start: 0,
+            end: 65,
+        },
+        inner: [
+            Pair {
+                rule: ident,
+                span: Span {
+                    str: "main",
+                    start: 3,
+                    end: 7,
+                },
+                inner: [],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "let a = 0xff;",
+                    start: 14,
+                    end: 27,
+                },
+                inner: [
+                    Pair {
+                        rule: createExpr,
+                        span: Span {
+                            str: "let a = 0xff",
+                            start: 14,
+                            end: 26,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "a",
+                                    start: 18,
+                                    end: 19,
+                                },
+                                inner: [],
+                            },
+                            Pair {
+                                rule: value,
+                                span: Span {
+                                    str: "0xff",
+                                    start: 22,
+                                    end: 26,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "let c;",
+                    start: 30,
+                    end: 36,
+                },
+                inner: [
+                    Pair {
+                        rule: createExpr,
+                        span: Span {
+                            str: "let c",
+                            start: 30,
+                            end: 35,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "c",
+                                    start: 34,
+                                    end: 35,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "let b;",
+                    start: 39,
+                    end: 45,
+                },
+                inner: [
+                    Pair {
+                        rule: createExpr,
+                        span: Span {
+                            str: "let b",
+                            start: 39,
+                            end: 44,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "b",
+                                    start: 43,
+                                    end: 44,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "b = a;",
+                    start: 48,
+                    end: 54,
+                },
+                inner: [
+                    Pair {
+                        rule: assignExpr,
+                        span: Span {
+                            str: "b = a",
+                            start: 48,
+                            end: 53,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "b",
+                                    start: 48,
+                                    end: 49,
+                                },
+                                inner: [],
+                            },
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "a",
+                                    start: 52,
+                                    end: 53,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+            Pair {
+                rule: expr,
+                span: Span {
+                    str: "c = b;",
+                    start: 57,
+                    end: 63,
+                },
+                inner: [
+                    Pair {
+                        rule: assignExpr,
+                        span: Span {
+                            str: "c = b",
+                            start: 57,
+                            end: 62,
+                        },
+                        inner: [
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "c",
+                                    start: 57,
+                                    end: 58,
+                                },
+                                inner: [],
+                            },
+                            Pair {
+                                rule: ident,
+                                span: Span {
+                                    str: "b",
+                                    start: 61,
+                                    end: 62,
+                                },
+                                inner: [],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    Pair {
+        rule: EOI,
+        span: Span {
+            str: "",
+            start: 65,
+            end: 65,
+        },
+        inner: [],
+    },
+]
